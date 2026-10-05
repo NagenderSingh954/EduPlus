@@ -1,0 +1,605 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
+enum AssignmentStatus {
+  PENDING
+  SUBMITTED
+  GRADED
+  LATE
+}
+
+enum DocumentCategory {
+  ASSIGNMENT
+  TIMETABLE
+  EXAM_RESULT
+  SYLLABUS
+  ANNOUNCEMENT
+  NOTES
+  OTHER
+}
+
+enum DocumentStatus {
+  PENDING
+  ANALYZING
+  ANALYZED
+  FAILED
+}
+
+enum TaskCategory {
+  STUDY
+  ASSIGNMENT
+  EXAM_PREP
+  PROJECT
+  PERSONAL
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskSource {
+  MANUAL
+  AI_RECOMMENDED
+  AI_ONE_HOUR
+  DAILY_PLAN
+  PROJECT
+}
+
+enum SessionStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  ABANDONED
+}
+
+enum NotificationType {
+  ACADEMIC
+  ATTENDANCE_ALERT
+  DAILY_PLAN
+  COLLABORATION
+  COMMUNITY
+  SYSTEM
+}
+
+enum ProficiencyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum CollabRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum ProjectRole {
+  LEAD
+  FRONTEND
+  BACKEND
+  ML_AI
+  DESIGNER
+  RESEARCHER
+  DOMAIN_EXPERT
+}
+
+enum ProjectTaskStatus {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  DONE
+}
+
+model User {
+  id               String                 @id @default(uuid())
+  email            String                 @unique
+  passwordHash     String
+  role             Role                   @default(STUDENT)
+  firstName        String
+  lastName         String
+  avatarUrl        String?
+  refreshToken     String?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  studentProfile   StudentProfile?
+  teacherProfile   TeacherProfile?
+  notifications    Notification[]
+  notifPreference  NotificationPreference?
+  communityPosts   CommunityPost[]
+  communityAnswers CommunityAnswer[]
+  communityVotes   CommunityVote[]
+}
+
+model StudentProfile {
+  id                   String                 @id @default(uuid())
+  userId               String                 @unique
+  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rollNumber           String                 @unique
+  semester             Int                    @default(5)
+  department           String                 @default("Computer Science & Engineering")
+  gpa                  Float?                 @default(3.65)
+  academicSummary      String?
+  strengths            Json?                  @default("[]")
+  weaknesses           Json?                  @default("[]")
+  learningPreferences  Json?                  @default("{\"style\": \"Visual & Hands-on\", \"pace\": \"Moderate\"}")
+  importantTopics      Json?                  @default("[]")
+  performanceTrend     Json?                  @default("[]")
+  currentGoals         Json?                  @default("[]")
+  upcomingPriorities   Json?                  @default("[]")
+  lastUpdated          DateTime               @default(now())
+
+  enrollments          Enrollment[]
+  attendanceRecords    AttendanceRecord[]
+  submissions          AssignmentSubmission[]
+  examResults          ExamResult[]
+  documents            AcademicDocument[]
+  analyses             AcademicAnalysis[]
+  tasks                Task[]
+  studySessions        StudySession[]
+  skills               StudentSkill[]
+  collabProfile        CollaborationProfile?
+  sentCollabRequests   CollaborationRequest[] @relation("SentRequests")
+  recvCollabRequests   CollaborationRequest[] @relation("RecvRequests")
+  projectMemberships   ProjectMember[]
+  createdProjects      Project[]              @relation("CreatedProjects")
+  assignedProjectTasks ProjectTask[]
+  chatMessages         ChatMessage[]
+}
+
+model TeacherProfile {
+  id             String         @id @default(uuid())
+  userId         String         @unique
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId     String         @unique
+  department     String         @default("Computer Science & Engineering")
+  designation    String         @default("Associate Professor")
+
+  courses        Course[]
+  attendances    Attendance[]
+  announcements  Announcement[]
+}
+
+model Course {
+  id          String         @id @default(uuid())
+  code        String         @unique
+  name        String
+  description String?
+  department  String         @default("Computer Science & Engineering")
+  semester    Int            @default(5)
+  credits     Int            @default(4)
+  teacherId   String
+  teacher     TeacherProfile @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  classes     Class[]
+  enrollments Enrollment[]
+  assignments Assignment[]
+  exams       Exam[]
+  attendances Attendance[]
+  timetables  TimetableEntry[]
+  announcements Announcement[]
+}
+
+model Class {
+  id           String           @id @default(uuid())
+  courseId     String
+  course       Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  section      String           @default("A")
+  academicYear String           @default("2026-2027")
+  semester     Int              @default(5)
+
+  enrollments  Enrollment[]
+  attendances  Attendance[]
+  timetables   Timetable[]
+}
+
+model Enrollment {
+  id         String         @id @default(uuid())
+  studentId  String
+  student    StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  courseId   String
+  course     Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  classId    String
+  class      Class          @relation(fields: [classId], references: [id], onDelete: Cascade)
+  enrolledAt DateTime       @default(now())
+
+  @@unique([studentId, courseId])
+}
+
+model Attendance {
+  id           String             @id @default(uuid())
+  courseId     String
+  course       Course             @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  classId      String
+  class        Class              @relation(fields: [classId], references: [id], onDelete: Cascade)
+  date         DateTime
+  teacherId    String
+  teacher      TeacherProfile     @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  topicCovered String?
+  createdAt    DateTime           @default(now())
+
+  records      AttendanceRecord[]
+
+  @@unique([courseId, classId, date])
+}
+
+model AttendanceRecord {
+  id           String           @id @default(uuid())
+  attendanceId String
+  attendance   Attendance       @relation(fields: [attendanceId], references: [id], onDelete: Cascade)
+  studentId    String
+  student      StudentProfile   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  status       AttendanceStatus @default(PRESENT)
+  remarks      String?
+
+  @@unique([attendanceId, studentId])
+}
+
+model Assignment {
+  id          String                 @id @default(uuid())
+  courseId    String
+  course      Course                 @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  maxMarks    Int                    @default(100)
+  dueDate     DateTime
+  fileUrl     String?
+  createdAt   DateTime               @default(now())
+
+  submissions AssignmentSubmission[]
+}
+
+model AssignmentSubmission {
+  id            String           @id @default(uuid())
+  assignmentId  String
+  assignment    Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  studentId     String
+  student       StudentProfile   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  submittedAt   DateTime         @default(now())
+  fileUrl       String?
+  marksObtained Float?
+  feedback      String?
+  status        AssignmentStatus @default(SUBMITTED)
+
+  @@unique([assignmentId, studentId])
+}
+
+model Timetable {
+  id           String           @id @default(uuid())
+  classId      String           @unique
+  class        Class            @relation(fields: [classId], references: [id], onDelete: Cascade)
+  semester     Int              @default(5)
+  academicYear String           @default("2026-2027")
+
+  entries      TimetableEntry[]
+}
+
+model TimetableEntry {
+  id          String    @id @default(uuid())
+  timetableId String
+  timetable   Timetable @relation(fields: [timetableId], references: [id], onDelete: Cascade)
+  dayOfWeek   String    // MONDAY, TUESDAY, etc.
+  startTime   String    // "09:00"
+  endTime     String    // "10:00"
+  courseId    String
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  room        String    @default("Lab 402")
+}
+
+model Exam {
+  id        String       @id @default(uuid())
+  courseId  String
+  course    Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title     String
+  examType  String       @default("MIDTERM") // INTERNAL_1, MIDTERM, FINAL
+  date      DateTime
+  maxMarks  Float        @default(100)
+  weightage Float?       @default(20)
+
+  results   ExamResult[]
+}
+
+model ExamResult {
+  id            String         @id @default(uuid())
+  examId        String
+  exam          Exam           @relation(fields: [examId], references: [id], onDelete: Cascade)
+  studentId     String
+  student       StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  marksObtained Float
+  grade         String?
+  remarks       String?
+  strengths     Json?          @default("[]")
+  weaknesses    Json?          @default("[]")
+  createdAt     DateTime       @default(now())
+
+  @@unique([examId, studentId])
+}
+
+model AcademicDocument {
+  id               String           @id @default(uuid())
+  studentId        String
+  student          StudentProfile   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  title            String
+  fileUrl          String
+  fileType         String           @default("pdf")
+  mimeType         String           @default("application/pdf")
+  fileSize         Int              @default(0)
+  documentCategory DocumentCategory @default(OTHER)
+  status           DocumentStatus   @default(PENDING)
+  createdAt        DateTime         @default(now())
+
+  analysis         AcademicAnalysis?
+}
+
+model AcademicAnalysis {
+  id                 String           @id @default(uuid())
+  documentId         String           @unique
+  document           AcademicDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  studentId          String
+  student            StudentProfile   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  extractedData      Json
+  summary            String
+  tags               Json             @default("[]")
+  confidenceScore    Float            @default(0.95)
+  appliedToProfile   Boolean          @default(true)
+  createdAt          DateTime         @default(now())
+}
+
+model Task {
+  id               String       @id @default(uuid())
+  studentId        String
+  student          StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  title            String
+  description      String?
+  category         TaskCategory @default(STUDY)
+  priority         Priority     @default(MEDIUM)
+  dueDate          DateTime?
+  estimatedMinutes Int          @default(30)
+  completed        Boolean      @default(false)
+  completedAt      DateTime?
+  source           TaskSource   @default(MANUAL)
+  projectId        String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model StudySession {
+  id             String        @id @default(uuid())
+  studentId      String
+  student        StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  title          String
+  targetMinutes  Int           @default(60)
+  actualMinutes  Int           @default(0)
+  subject        String?
+  topics         Json?         @default("[]")
+  completedTasks Json?         @default("[]")
+  status         SessionStatus @default(ACTIVE)
+  startedAt      DateTime      @default(now())
+  completedAt    DateTime?
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      NotificationType @default(ACADEMIC)
+  read      Boolean          @default(false)
+  actionUrl String?
+  createdAt DateTime         @default(now())
+}
+
+model NotificationPreference {
+  id                      String   @id @default(uuid())
+  userId                  String   @unique
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emailEnabled            Boolean  @default(true)
+  inAppEnabled            Boolean  @default(true)
+  dailyDigestTime         String   @default("07:00")
+  attendanceThresholdAlert Boolean @default(true)
+}
+
+model CommunityPost {
+  id          String            @id @default(uuid())
+  authorId    String
+  author      User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title       String
+  content     String
+  category    String            @default("Computer Science")
+  tags        Json              @default("[\"DBMS\", \"Transactions\"]")
+  views       Int               @default(1)
+  isResolved  Boolean           @default(false)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  answers     CommunityAnswer[]
+  votes       CommunityVote[]
+}
+
+model CommunityAnswer {
+  id         String          @id @default(uuid())
+  postId     String
+  post       CommunityPost   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId   String
+  author     User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content    String
+  isAccepted Boolean         @default(false)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  votes      CommunityVote[]
+}
+
+model CommunityVote {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    String?
+  post      CommunityPost?   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  answerId  String?
+  answer    CommunityAnswer? @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  voteType  String           @default("UP") // "UP", "DOWN"
+
+  @@unique([userId, postId, answerId])
+}
+
+model Skill {
+  id       String         @id @default(uuid())
+  name     String         @unique
+  category String         @default("Technical")
+
+  students StudentSkill[]
+}
+
+model StudentSkill {
+  id               String           @id @default(uuid())
+  studentId        String
+  student          StudentProfile   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  skillId          String
+  skill            Skill            @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  proficiencyLevel ProficiencyLevel @default(INTERMEDIATE)
+
+  @@unique([studentId, skillId])
+}
+
+model CollaborationProfile {
+  id                     String         @id @default(uuid())
+  studentId              String         @unique
+  student                StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  bio                    String?
+  lookingFor             String?
+  interests              Json?          @default("[\"Artificial Intelligence\", \"Web Development\", \"Hackathons\"]")
+  availabilityHoursWeekly Int           @default(12)
+  githubUrl              String?
+  portfolioUrl           String?
+  active                 Boolean        @default(true)
+}
+
+model CollaborationRequest {
+  id         String              @id @default(uuid())
+  senderId   String
+  sender     StudentProfile      @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   StudentProfile      @relation("RecvRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+  projectId  String?
+  message    String
+  status     CollabRequestStatus @default(PENDING)
+  createdAt  DateTime            @default(now())
+}
+
+model Project {
+  id          String             @id @default(uuid())
+  title       String
+  description String
+  creatorId   String
+  creator     StudentProfile     @relation("CreatedProjects", fields: [creatorId], references: [id], onDelete: Cascade)
+  status      ProjectStatus      @default(ACTIVE)
+  githubUrl   String?
+  demoUrl     String?
+  createdAt   DateTime           @default(now())
+
+  members     ProjectMember[]
+  milestones  ProjectMilestone[]
+  tasks       ProjectTask[]
+}
+
+model ProjectMember {
+  id        String         @id @default(uuid())
+  projectId String
+  project   Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  studentId String
+  student   StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  role      ProjectRole    @default(FRONTEND)
+  joinedAt  DateTime       @default(now())
+
+  @@unique([projectId, studentId])
+}
+
+model ProjectMilestone {
+  id          String        @id @default(uuid())
+  projectId   String
+  project     Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  order       Int           @default(1)
+  dueDate     DateTime?
+  completed   Boolean       @default(false)
+
+  tasks       ProjectTask[]
+}
+
+model ProjectTask {
+  id           String            @id @default(uuid())
+  projectId    String
+  project      Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  milestoneId  String?
+  milestone    ProjectMilestone? @relation(fields: [milestoneId], references: [id], onDelete: SetNull)
+  title        String
+  description  String?
+  assignedToId String?
+  assignedTo   StudentProfile?   @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  status       ProjectTaskStatus @default(TODO)
+  priority     Priority          @default(MEDIUM)
+  dueDate      DateTime?
+  createdAt    DateTime          @default(now())
+}
+
+model Announcement {
+  id             String         @id @default(uuid())
+  courseId       String?
+  course         Course?        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  teacherId      String
+  teacher        TeacherProfile @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  title          String
+  content        String
+  priority       Priority       @default(MEDIUM)
+  targetAudience String         @default("COURSE") // "ALL", "COURSE"
+  createdAt      DateTime       @default(now())
+}
+
+model ChatMessage {
+  id             String         @id @default(uuid())
+  studentId      String
+  student        StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  role           String         // "user" | "model"
+  content        String
+  executedAction Json?
+  contextUsed    Json?
+  documentId     String?
+  createdAt      DateTime       @default(now())
+
+  @@index([studentId, createdAt])
+}
+
