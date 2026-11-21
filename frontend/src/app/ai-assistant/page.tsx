@@ -16,12 +16,12 @@ interface Message {
 }
 
 const BASE_SUGGESTED_PROMPTS = [
-  { icon: '📄', text: 'Analyze my uploaded notes', prompt: 'Analyze my uploaded document and summarize the core concepts, formulas, and key takeaways.' },
+  { icon: 'Document', text: 'Analyze my uploaded notes', prompt: 'Analyze my uploaded document and summarize the core concepts, formulas, and key takeaways.' },
   { icon: '📊', text: 'Analyze my latest exam result', prompt: "Analyze my latest exam results and tell me where I'm struggling." },
   { icon: '📅', text: 'Make a comprehensive study plan', prompt: 'Based on my exam results, upcoming deadlines, and uploaded documents, create a detailed study plan for this week.' },
-  { icon: '⏱️', text: 'I have 1 hour free', prompt: 'I have 1 hour free right now. What should I study based on my vulnerabilities?' },
+  { icon: 'Focus', text: 'I have 1 hour free', prompt: 'I have 1 hour free right now. What should I study based on my vulnerabilities?' },
   { icon: '🎯', text: 'What to focus on this week', prompt: 'What should I prioritize and focus on this week based on my academic state?' },
-  { icon: '⚠️', text: 'Explain my weakest subject', prompt: 'Why am I struggling in my weakest subject and how can I improve?' },
+  { icon: 'Review', text: 'Explain my weakest subject', prompt: 'Why am I struggling in my weakest subject and how can I improve?' },
 ];
 
 function parseMarkdown(text: string) {
@@ -47,7 +47,7 @@ function AiAssistantContent() {
   const welcomeMsg: Message = {
     id: 'welcome',
     role: 'model',
-    content: `Hello ${user?.firstName || 'there'}! 👋 I'm your **Academic Operating System AI**, powered by Gemini.\n\nI have real-time access to your academic state: attendance records, exam results, assignments, timetables, and **all your uploaded notes & documents**.\n\nAsk me questions directly about your uploaded files, syllabus, or academic goals!`,
+    content: `Hello ${user?.firstName || 'there'}.\n\nI'm your academic assistant. I can help with attendance, exam results, assignments, timetables, and uploaded documents.\n\nWhat would you like to work through?`,
     timestamp: new Date()
   };
 
@@ -215,7 +215,7 @@ function AiAssistantContent() {
           {
             id: Date.now().toString(),
             role: 'model',
-            content: `✅ Task **"${title}"** has been added directly to your Academic Priorities planner.`,
+            content: `Task "${title}" was added to your Academic Priorities planner.`,
             timestamp: new Date()
           }
         ]);
@@ -228,14 +228,14 @@ function AiAssistantContent() {
   return (
     <div className="flex flex-col h-[calc(100vh-120px)] max-h-[850px]">
       {/* Header */}
-      <div className="glass-card rounded-2xl p-4 border border-border/40 mb-3 flex items-center justify-between shrink-0">
+      <div className="mb-3 flex shrink-0 items-center justify-between border-b border-[#e4e7e1] pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-glow-primary">
-            <Sparkles className="w-5 h-5 text-white animate-pulse-subtle" />
+          <div className="w-10 h-10 rounded-[8px] bg-[#171817] flex items-center justify-center">
+            <Sparkles className="w-4 h-4 text-white" />
           </div>
           <div>
             <h1 className="text-sm font-bold text-white">Academic AI Assistant</h1>
-            <p className="text-[11px] text-slate-400">Gemini 3.6 Flash · Grounded in persistent academic memory</p>
+            <p className="text-[11px] text-slate-400">Academic assistant grounded in your records</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -293,7 +293,7 @@ function AiAssistantContent() {
       {focusedDoc && (
         <div className="glass-card rounded-xl px-4 py-2 border border-primary/30 bg-primary/5 mb-3 flex items-center justify-between text-xs animate-fade-in-up shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-base">📄</span>
+            <FileText className="w-4 h-4 text-[#15803d]" />
             <div>
               <span className="font-semibold text-white">Primary Document Focus:</span>{' '}
               <span className="text-primary-glow font-medium">{focusedDoc.title}</span>
@@ -314,7 +314,7 @@ function AiAssistantContent() {
       {/* One Hour Panel */}
       {showOneHour && (
         <div className="glass-card rounded-2xl p-5 border border-warning/20 bg-warning/5 mb-4 shrink-0 animate-fade-in-up">
-          <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2"><Zap className="w-4 h-4 text-warning" /> ⏱ What can I do right now?</h3>
+          <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2"><Zap className="w-4 h-4 text-[#15803d]" /> What can I do right now?</h3>
           <div className="flex items-center gap-3 mb-4">
             <label className="text-xs text-slate-400">Available time:</label>
             {[30, 45, 60, 90, 120].map(m => (
@@ -381,7 +381,7 @@ function AiAssistantContent() {
       <div className="flex-1 overflow-y-auto space-y-4 pr-1 mb-4">
         {messages.map(msg => (
           <div key={msg.id} className={`flex gap-3 animate-fade-in-up ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-primary/20 border border-primary/30' : 'bg-gradient-to-tr from-primary to-accent shadow-glow-primary'}`}>
+            <div className={`w-8 h-8 rounded-[7px] flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-[#eef5ef] border border-[#d8e5da] text-[#15803d]' : 'bg-[#171817] text-white'}`}>
               {msg.role === 'user' ? <User className="w-4 h-4 text-primary-glow" /> : <Bot className="w-4 h-4 text-white" />}
             </div>
             <div className={`max-w-[80%] rounded-2xl p-4 ${msg.role === 'user' ? 'bg-primary/15 border border-primary/20 rounded-tr-sm' : 'glass-card border border-border/40 rounded-tl-sm'}`}>
@@ -399,7 +399,7 @@ function AiAssistantContent() {
                 <div className="mt-2.5 pt-2 border-t border-border/20 flex items-center gap-3 text-[10px] text-slate-500 flex-wrap">
                   <span>Attendance: <strong>{msg.contextUsed.overallAttendance}%</strong></span>
                   {msg.contextUsed.atRiskCourses?.length > 0 && (
-                    <span className="text-warning font-medium">⚠ At-risk: {msg.contextUsed.atRiskCourses.join(', ')}</span>
+                    <span className="text-[#a16207] font-medium">At risk: {msg.contextUsed.atRiskCourses.join(', ')}</span>
                   )}
                   {msg.contextUsed.focusedDocument && (
                     <span className="text-accent flex items-center gap-1 font-semibold">
@@ -408,7 +408,7 @@ function AiAssistantContent() {
                   )}
                   {msg.contextUsed.documentsCount > 0 && !msg.contextUsed.focusedDocument && (
                     <span className="text-slate-400">
-                      📄 {msg.contextUsed.documentsCount} documents in context
+                      {msg.contextUsed.documentsCount} documents in context
                     </span>
                   )}
                 </div>
@@ -441,7 +441,7 @@ function AiAssistantContent() {
         ))}
         {loading && (
           <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-accent flex items-center justify-center shrink-0 shadow-glow-primary">
+            <div className="w-8 h-8 rounded-[7px] bg-[#171817] flex items-center justify-center shrink-0">
               <Bot className="w-4 h-4 text-white" />
             </div>
             <div className="glass-card rounded-2xl rounded-tl-sm border border-border/40 p-4">

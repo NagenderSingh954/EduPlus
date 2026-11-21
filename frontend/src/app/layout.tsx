@@ -4,10 +4,11 @@ import { AuthProvider } from '@/lib/auth-context';
 import { ThemeProvider } from '@/lib/theme-context';
 import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { PageTransition } from '@/components/layout/PageTransition';
 
 export const metadata: Metadata = {
-  title: 'AcademiQ — AI-Powered Academic Operating System',
-  description: 'AI-powered student academic intelligence and collaboration platform grounded in persistent academic state.',
+  title: 'EduPlus',
+  description: 'Academic workspace for students and educators.',
 };
 
 export default function RootLayout({
@@ -16,16 +17,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
-      <body className="bg-background text-slate-100 antialiased selection:bg-primary/30 selection:text-white min-h-screen">
+    <html lang="en" className="light" suppressHydrationWarning>
+      <body className="min-h-screen bg-[#f7f8f5] text-[#171918] antialiased">
         <ThemeProvider>
           <AuthProvider>
             <div className="min-h-screen flex flex-col">
               <Navbar />
-              <div className="flex flex-1">
+              <div className="flex min-h-0 flex-1">
                 <Sidebar />
-                <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full overflow-y-auto">
-                  {children}
+                <main className="w-full flex-1 px-4 py-5 md:px-7 md:py-7 xl:px-8 xl:py-8 overflow-y-auto">
+                  <PageTransition>{children}</PageTransition>
                 </main>
               </div>
             </div>

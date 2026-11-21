@@ -146,13 +146,14 @@ export default function CollaborationPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div>
-        <h1 className="text-xl font-bold text-white">AI Team Matcher</h1>
-        <p className="text-xs text-slate-400 mt-1">Find collaborators with complementary skills · AI-powered matching</p>
+      <div className="border-b border-[#e4e7e1] pb-5">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#1d5a43]">Collaboration</p>
+        <h1 className="mt-1 text-[26px] font-semibold tracking-[-0.035em] text-[#171918]">Find teammates</h1>
+        <p className="mt-1 text-[12px] text-[#858b82]">Discover students with complementary skills</p>
       </div>
 
       {/* AI Team Matcher */}
-      <div className="glass-card rounded-2xl p-5 border border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
+      <div className="rounded-[10px] p-5 border border-[#dfe3dc] bg-white">
         <div className="flex items-center gap-2 mb-3">
           <Brain className="w-5 h-5 text-primary-glow" />
           <h2 className="text-sm font-bold text-white">AI Project Team Matcher</h2>

@@ -10,14 +10,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#090d16',
-        surface: '#0f172a',
-        'surface-elevated': '#1e293b',
-        border: '#334155',
+        background: '#f7f8f5',
+        surface: '#ffffff',
+        'surface-elevated': '#f2f4ef',
+        border: '#e4e7e1',
         primary: {
-          DEFAULT: '#6366f1',
-          hover: '#4f46e5',
-          glow: '#818cf8',
+          DEFAULT: '#1d5a43',
+          hover: '#174936',
+          glow: '#3c8064',
         },
         accent: {
           DEFAULT: '#10b981',

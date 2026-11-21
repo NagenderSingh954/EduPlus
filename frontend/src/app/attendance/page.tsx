@@ -51,54 +51,67 @@ export default function AttendancePage() {
   return (
     <div className="space-y-6 pb-8">
       {/* Header */}
-      <div>
-        <h1 className="text-xl font-bold text-white">Attendance Analytics</h1>
-        <p className="text-xs text-slate-400 mt-1">Real-time attendance tracking across all enrolled subjects</p>
+      <div className="edu-section-head">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#1d5a43]">Academic record</p>
+        <h1 className="mt-1 text-[26px] font-semibold tracking-[-0.035em] text-[#171918]">Attendance analytics</h1>
+        <p className="mt-1 text-[12px] text-[#858b82]">Real-time tracking across all enrolled subjects</p>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="glass-card rounded-2xl p-4 border border-border/40">
-          <p className="text-[11px] text-slate-400 uppercase tracking-wider">Overall</p>
-          <p className={`text-3xl font-bold mt-1 ${overview.overallAttendance >= 75 ? 'text-accent' : 'text-danger-glow'}`}>
-            {overview.overallAttendance}%
-          </p>
-          <p className="text-[11px] text-slate-500 mt-1">{overview.overallAttendance >= 75 ? 'Above threshold' : 'Below 75% threshold!'}</p>
+      {/* Overall attendance as an editorial summary */}
+      <section className="grid overflow-hidden rounded-[12px] border border-[#e4e7e1] bg-white lg:grid-cols-[1.35fr_.65fr]">
+        <div className="flex items-end justify-between px-5 py-6 md:px-7">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#858b82]">Overall attendance</p>
+            <p className={`mt-3 text-[52px] font-semibold leading-none tracking-[-0.06em] ${overview.overallAttendance >= 75 ? 'text-[#1d5a43]' : 'text-[#b42318]'}`}>
+              {overview.overallAttendance}<span className="text-[22px]">%</span>
+            </p>
+            <p className="mt-3 text-[12px] text-[#858b82]">
+              {overview.overallAttendance >= 75 ? 'Meeting the required threshold' : 'Attendance is below the required threshold'}
+            </p>
+          </div>
+          <div className="relative mb-1 hidden h-24 w-24 sm:block">
+            <svg className="-rotate-90" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="38" fill="none" stroke="#eef0ec" strokeWidth="8" />
+              <circle cx="50" cy="50" r="38" fill="none" stroke={overview.overallAttendance >= 75 ? '#1d5a43' : '#b42318'} strokeWidth="8" strokeLinecap="round" strokeDasharray={`${overview.overallAttendance * 2.39} 239`} />
+            </svg>
+          </div>
         </div>
-        <div className="glass-card rounded-2xl p-4 border border-border/40">
-          <p className="text-[11px] text-slate-400 uppercase tracking-wider">Safe Subjects</p>
-          <p className="text-3xl font-bold mt-1 text-accent">{safeSubjects.length}</p>
-          <p className="text-[11px] text-slate-500 mt-1">≥75% attendance</p>
+        <div className="grid grid-cols-3 border-t border-[#e4e7e1] lg:grid-cols-1 lg:border-l lg:border-t-0">
+          <div className="px-4 py-5 lg:flex lg:items-center lg:justify-between lg:px-6">
+            <p className="text-[11px] text-[#858b82]">On track</p>
+            <p className="mt-1 text-[22px] font-semibold text-[#1d5a43] lg:mt-0">{safeSubjects.length}</p>
+          </div>
+          <div className="border-l border-[#e4e7e1] px-4 py-5 lg:flex lg:items-center lg:justify-between lg:border-l-0 lg:border-t lg:px-6">
+            <p className="text-[11px] text-[#858b82]">At risk</p>
+            <p className="mt-1 text-[22px] font-semibold text-[#b42318] lg:mt-0">{atRiskSubjects.length}</p>
+          </div>
+          <div className="border-l border-[#e4e7e1] px-4 py-5 lg:flex lg:items-center lg:justify-between lg:border-l-0 lg:border-t lg:px-6">
+            <p className="text-[11px] text-[#858b82]">Subjects</p>
+            <p className="mt-1 text-[22px] font-semibold text-[#171918] lg:mt-0">{subjectAttendance.length}</p>
+          </div>
         </div>
-        <div className="glass-card rounded-2xl p-4 border border-border/40">
-          <p className="text-[11px] text-slate-400 uppercase tracking-wider">At Risk</p>
-          <p className={`text-3xl font-bold mt-1 ${atRiskSubjects.length > 0 ? 'text-danger-glow' : 'text-accent'}`}>{atRiskSubjects.length}</p>
-          <p className="text-[11px] text-slate-500 mt-1">Below 75%</p>
-        </div>
-        <div className="glass-card rounded-2xl p-4 border border-border/40">
-          <p className="text-[11px] text-slate-400 uppercase tracking-wider">Subjects</p>
-          <p className="text-3xl font-bold mt-1 text-white">{subjectAttendance.length}</p>
-          <p className="text-[11px] text-slate-500 mt-1">Enrolled</p>
-        </div>
-      </div>
+      </section>
 
       {/* At-Risk Alerts */}
       {atRiskSubjects.length > 0 && (
-        <div className="space-y-2">
-          <h2 className="text-sm font-semibold text-white flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-danger-glow animate-pulse" /> Attendance Alerts
-          </h2>
+        <section className="overflow-hidden rounded-[12px] border border-[#f0d2ce] bg-[#fffafa]">
+          <div className="flex items-center justify-between border-b border-[#f0d2ce] px-5 py-3">
+            <h2 className="flex items-center gap-2 text-[12px] font-semibold text-[#9f2d24]">
+              <AlertTriangle className="h-4 w-4" /> Attention required
+            </h2>
+            <span className="text-[11px] text-[#a97570]">{atRiskSubjects.length} subject{atRiskSubjects.length === 1 ? '' : 's'} below 75%</span>
+          </div>
           {atRiskSubjects.map((s: any) => (
-            <div key={s.code} className="glass-card rounded-2xl p-4 border border-danger/30 bg-danger/5">
+            <div key={s.code} className="px-5 py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-semibold text-white">{s.name}</p>
-                  <p className="text-xs text-slate-400">{s.code} · {s.attended}/{s.total} classes attended</p>
+                  <p className="text-[13px] font-semibold text-[#171918]">{s.name}</p>
+                  <p className="mt-1 text-[11px] text-[#858b82]">{s.code} · {s.attended}/{s.total} classes attended</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-bold text-danger-glow">{s.percentage}%</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
-                    {s.classesNeededFor75 > 0 ? `Need ${s.classesNeededFor75} more to reach 75%` : 'Safe'}
+                  <p className="text-[20px] font-semibold text-[#b42318]">{s.percentage}%</p>
+                  <p className="mt-0.5 text-[10px] text-[#858b82]">
+                    {s.classesNeededFor75 > 0 ? `${s.classesNeededFor75} classes to reach 75%` : 'Target reached'}
                   </p>
                 </div>
               </div>
@@ -117,66 +130,61 @@ export default function AttendancePage() {
               </div>
             </div>
           ))}
-        </div>
+        </section>
       )}
 
-      {/* Chart */}
-      <div className="glass-card rounded-2xl p-5 border border-border/40">
-        <h2 className="text-sm font-semibold text-white mb-4">Subject-wise Attendance</h2>
+      {/* Analysis and subject ledger */}
+      <section className="grid gap-5 xl:grid-cols-[1fr_360px]">
+      <div className="rounded-[12px] border border-[#e4e7e1] bg-white p-5">
+        <div className="mb-5 flex items-center justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#858b82]">Subject view</p>
+            <h2 className="mt-1 text-[16px] font-semibold text-[#171918]">Attendance comparison</h2>
+          </div>
+          <span className="rounded-md border border-[#e4e7e1] px-2 py-1 text-[10px] text-[#858b82]">Current semester</span>
+        </div>
+        {subjectAttendance.length === 0 ? (
+          <div className="flex h-[220px] items-center justify-center border-t border-[#e4e7e1] text-[12px] text-[#858b82]">No attendance records yet</div>
+        ) : (
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={chartData} barSize={32}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-            <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} domain={[0, 100]} axisLine={false} tickLine={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#e4e7e1" vertical={false} />
+            <XAxis dataKey="name" tick={{ fill: '#858b82', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: '#858b82', fontSize: 11 }} domain={[0, 100]} axisLine={false} tickLine={false} />
             <Tooltip
-              contentStyle={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 12, fontSize: 12 }}
+              contentStyle={{ background: '#ffffff', border: '1px solid #e4e7e1', borderRadius: 8, fontSize: 12, color: '#171918', boxShadow: '0 8px 24px rgba(23,25,24,.08)' }}
               formatter={(v: any, name: string) => [`${v}%`, name === 'attendance' ? 'Attended' : 'Missed']}
               labelFormatter={(label: string, payload: any) => payload?.[0]?.payload?.fullName || label}
             />
             <Bar dataKey="attendance" name="attendance" radius={[6, 6, 0, 0]}>
               {chartData.map((entry: any, idx: number) => (
-                <Cell key={idx} fill={entry.isAtRisk ? '#ef4444' : '#6366f1'} />
+                <Cell key={idx} fill={entry.isAtRisk ? '#ef4444' : '#1d5a43'} />
               ))}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-        {/* Threshold line label */}
-        <p className="text-[11px] text-slate-500 text-center mt-2">Red bars = below 75% threshold. Consecutive attendance required.</p>
+        )}
       </div>
 
-      {/* Subject Breakdown Table */}
-      <div className="glass-card rounded-2xl border border-border/40 overflow-hidden">
-        <div className="p-4 border-b border-border/40">
-          <h2 className="text-sm font-semibold text-white">Detailed Breakdown</h2>
+      <div className="overflow-hidden rounded-[12px] border border-[#e4e7e1] bg-white">
+        <div className="flex items-center justify-between border-b border-[#e4e7e1] px-5 py-4">
+          <h2 className="text-[13px] font-semibold text-[#171918]">Subject ledger</h2>
+          <span className="text-[10px] text-[#858b82]">{subjectAttendance.length} subjects</span>
         </div>
-        <div className="divide-y divide-border/30">
+        <div>
           {subjectAttendance.map((s: any) => (
-            <div key={s.code} className="flex items-center gap-4 p-4 hover:bg-surface-elevated/30 transition-colors">
-              <div className={`w-2 h-8 rounded-full shrink-0 ${s.isAtRisk ? 'bg-danger' : 'bg-accent'}`} />
+            <div key={s.code} className="flex items-center gap-3 border-b border-[#f0f1ed] px-5 py-3.5 last:border-b-0">
+              <div className={`h-8 w-1 rounded-full shrink-0 ${s.isAtRisk ? 'bg-[#b42318]' : 'bg-[#1d5a43]'}`} />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-white">{s.name}</p>
-                <p className="text-[11px] text-slate-400">{s.code}</p>
+                <p className="truncate text-[12px] font-semibold text-[#171918]">{s.name}</p>
+                <p className="mt-0.5 text-[10px] text-[#858b82]">{s.code} · {s.attended}/{s.total} classes</p>
               </div>
-              <div className="text-center">
-                <p className="text-xs text-slate-400">{s.attended}/{s.total}</p>
-                <p className="text-[10px] text-slate-500">classes</p>
-              </div>
-              <div className="w-24 hidden sm:block">
-                <div className="w-full bg-surface-elevated rounded-full h-1.5">
-                  <div
-                    className="h-full rounded-full transition-all"
-                    style={{ width: `${s.percentage}%`, backgroundColor: s.isAtRisk ? '#ef4444' : '#10b981' }}
-                  />
-                </div>
-              </div>
-              <div className="text-right w-16">
-                <p className={`text-sm font-bold ${s.isAtRisk ? 'text-danger-glow' : 'text-accent'}`}>{s.percentage}%</p>
-                {s.isAtRisk && <p className="text-[10px] text-warning">+{s.classesNeededFor75} to 75%</p>}
-              </div>
+              <p className={`w-12 text-right text-[13px] font-semibold ${s.isAtRisk ? 'text-[#b42318]' : 'text-[#1d5a43]'}`}>{s.percentage}%</p>
             </div>
           ))}
         </div>
       </div>
+      </section>
     </div>
   );
 }

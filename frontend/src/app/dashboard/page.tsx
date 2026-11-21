@@ -22,15 +22,15 @@ const getGreeting = () => {
 };
 
 const StatCard = ({ label, value, sub, icon: Icon, color = 'primary', pulse = false }: any) => (
-  <div className="glass-card rounded-2xl p-5 border border-border/40 hover:border-primary/30 transition-all duration-300 hover:-translate-y-0.5 animate-fade-in-up">
+  <div className="rounded-[9px] border border-[#e4e7e1] bg-white p-4 transition-colors hover:border-[#ccd6cc]">
     <div className="flex items-start justify-between">
       <div>
-        <p className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">{label}</p>
-        <p className={`text-3xl font-bold mt-1 ${color === 'warning' ? 'text-warning' : color === 'accent' ? 'text-accent' : color === 'danger' ? 'text-danger-glow' : 'text-white'}`}>{value}</p>
-        {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
+        <p className="text-[11px] font-medium text-[#858b82]">{label}</p>
+        <p className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[#171918]">{value}</p>
+        {sub && <p className="mt-1 text-[11px] text-[#989e95]">{sub}</p>}
       </div>
-      <div className={`p-2.5 rounded-xl ${color === 'warning' ? 'bg-warning/10' : color === 'accent' ? 'bg-accent/10' : color === 'danger' ? 'bg-danger/10' : 'bg-primary/10'}`}>
-        <Icon className={`w-5 h-5 ${color === 'warning' ? 'text-warning' : color === 'accent' ? 'text-accent' : color === 'danger' ? 'text-danger-glow' : 'text-primary-glow'} ${pulse ? 'animate-pulse' : ''}`} />
+      <div className="grid h-8 w-8 place-items-center rounded-[7px] border border-[#e3e7df] bg-[#f7f9f5]">
+        <Icon className="h-4 w-4 text-[#1d5a43]" />
       </div>
     </div>
   </div>
@@ -249,31 +249,46 @@ export default function DashboardPage() {
       )}
 
       {/* Header */}
-      <div className="glass-card rounded-2xl p-6 border border-border/40 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 animate-fade-in-up">
-        <div className="flex items-center justify-between">
+      <section className="border-b border-[#dde3dd] pb-5">
+        <div className="mb-3 flex items-center gap-2 text-[11px] text-[#7d847c]">
+          <span>Workspace</span>
+          <ChevronRight className="h-3 w-3" />
+          <span className="text-[#4d554e]">My work</span>
+        </div>
+        <div className="flex items-end justify-between gap-4">
           <div>
-            <p className="text-slate-400 text-sm">{getGreeting()}, <span className="text-white font-semibold">{student.name.split(' ')[0]}</span> 👋</p>
-            <h1 className="text-2xl font-bold text-white mt-0.5">Your Academic Operating System</h1>
-            <p className="text-xs text-slate-400 mt-1">{student.department} · Semester {student.semester} · Roll {student.rollNumber}</p>
+            <p className="text-[12px] text-[#858b82]">{getGreeting()}, {student.name.split(' ')[0]}</p>
+            <h1 className="mt-1 text-[30px] font-semibold tracking-[-0.04em] text-[#171918]">My work</h1>
           </div>
-          <div className="text-right hidden sm:block">
-            <div className="text-4xl font-black text-white">{overview.academicHealthScore}<span className="text-lg text-slate-400">/100</span></div>
-            <p className="text-xs text-slate-400 mt-1">Academic Health Score</p>
+          <div className="hidden items-center gap-6 sm:flex">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.12em] text-[#979d95]">Academic health</p>
+              <p className="mt-1 text-[20px] font-semibold text-[#171918]">{overview.academicHealthScore}<span className="text-[11px] text-[#979d95]"> / 100</span></p>
+            </div>
+            <button className="h-9 rounded-[6px] border border-[#cfd7d0] bg-white px-3 text-[12px] font-semibold text-[#3f4741] shadow-sm">Create task</button>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        <StatCard label="Attendance" value={`${overview.overallAttendance}%`} sub="Overall" icon={CheckCircle2} color={overview.overallAttendance >= 75 ? 'accent' : 'danger'} />
-        <StatCard label="Performance" value={`${overview.averageExamScore}%`} sub="Avg exam score" icon={TrendingUp} color="primary" />
-        <StatCard label="GPA" value={overview.gpa?.toFixed(2) || '—'} sub="Current" icon={Award} color="accent" />
-        <StatCard label="Assignments" value={overview.pendingAssignmentsCount} sub="Pending" icon={FileText} color={overview.pendingAssignmentsCount > 2 ? 'warning' : 'primary'} />
-        <StatCard label="Next Exam" value={overview.upcomingExamsCount > 0 ? `${overview.upcomingExamsCount}` : '—'} sub="Upcoming" icon={Calendar} color="warning" />
-      </div>
+      <section className="grid border-y border-[#dde3dd] bg-white sm:grid-cols-2 lg:grid-cols-5">
+        {[
+          ['Attendance', `${overview.overallAttendance}%`, 'Overall'],
+          ['Performance', `${overview.averageExamScore}%`, 'Exam average'],
+          ['GPA', overview.gpa?.toFixed(2) || '—', 'Current'],
+          ['Assignments', overview.pendingAssignmentsCount, 'Pending'],
+          ['Exams', overview.upcomingExamsCount > 0 ? overview.upcomingExamsCount : '—', 'Upcoming'],
+        ].map(([label, value, sub], index) => (
+          <div key={String(label)} className={`px-5 py-5 ${index > 0 ? 'border-t border-[#e4e7e1] sm:border-l lg:border-t-0' : ''}`}>
+            <p className="text-[11px] text-[#858b82]">{label}</p>
+            <p className="mt-2 text-[26px] font-semibold leading-none tracking-[-0.04em] text-[#171918]">{value}</p>
+            <p className="mt-2 text-[10px] text-[#a0a59d]">{sub}</p>
+          </div>
+        ))}
+      </section>
 
       {/* FEATURE 10: "I HAVE 1 HOUR" / WHAT CAN I DO RIGHT NOW? PROMINENT INTERACTIVE WIDGET */}
-      <div className="glass-card rounded-2xl p-6 border border-warning/30 bg-gradient-to-r from-warning/10 via-surface/40 to-primary/10 animate-fade-in-up space-y-4">
+      <div className="border-y border-[#dde3dd] py-5 animate-fade-in-up space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-warning/20 text-warning">
@@ -281,7 +296,7 @@ export default function DashboardPage() {
             </div>
             <div>
               <h2 className="text-base font-bold text-white flex items-center gap-2">
-                ⏱ What can I do right now?
+                What can I do right now?
                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-warning/20 text-warning border border-warning/30">
                   AI Sprint Planner
                 </span>
@@ -403,7 +418,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Academic Health Breakdown */}
-        <div className="glass-card rounded-2xl p-5 border border-border/40">
+        <div className="p-5">
           <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
             <Brain className="w-4 h-4 text-accent" /> Academic Health
           </h2>
@@ -435,14 +450,14 @@ export default function DashboardPage() {
       </div>
 
       {/* Bottom Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 divide-y divide-[#dde3dd] border-y border-[#dde3dd] md:grid-cols-3 md:divide-x md:divide-y-0">
         {/* Today's Classes */}
-        <div className="glass-card rounded-2xl p-5 border border-border/40">
+        <div className="p-5">
           <h2 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
             <Calendar className="w-4 h-4 text-primary-glow" /> Today's Classes
           </h2>
           {todayClasses.length === 0 ? (
-            <div className="text-center py-8 text-slate-500 text-xs">No classes today 🎉</div>
+            <div className="text-center py-8 text-slate-500 text-xs">No classes today</div>
           ) : (
             <div className="space-y-2">
               {todayClasses.map((cls: any) => (
@@ -459,12 +474,12 @@ export default function DashboardPage() {
         </div>
 
         {/* Pending Assignments */}
-        <div className="glass-card rounded-2xl p-5 border border-border/40">
+        <div className="p-5">
           <h2 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
             <FileText className="w-4 h-4 text-warning" /> Pending Assignments
           </h2>
           {pendingAssignments.length === 0 ? (
-            <div className="text-center py-8 text-slate-500 text-xs">All caught up! ✅</div>
+            <div className="text-center py-8 text-slate-500 text-xs">All caught up</div>
           ) : (
             <div className="space-y-2">
               {pendingAssignments.slice(0, 4).map((a: any) => {
@@ -486,7 +501,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Tasks */}
-        <div className="glass-card rounded-2xl p-5 border border-border/40">
+        <div className="p-5">
           <h2 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
             <Target className="w-4 h-4 text-accent" /> Today's Priorities
           </h2>

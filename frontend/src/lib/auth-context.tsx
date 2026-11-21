@@ -47,7 +47,7 @@ const AuthContext = createContext<AuthContextType>({
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 // Public routes that don't require authentication
-const PUBLIC_ROUTES = ['/login'];
+const PUBLIC_ROUTES = ['/', '/login'];
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);

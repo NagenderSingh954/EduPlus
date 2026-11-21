@@ -13,32 +13,30 @@ import {
   MessageSquare,
   Users,
   FolderGit2,
-  CheckSquare,
   GraduationCap,
-  ClipboardList
+  ClipboardList,
 } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname();
   const { user } = useAuth();
 
-  // Hide sidebar on login page
-  if (pathname === '/login') return null;
+  if (pathname === '/login' || pathname === '/') return null;
 
   const isTeacher = user?.role === 'TEACHER';
 
-  const studentLinks = [
+  const studentLinks: Array<{ href: string; label: string; icon: typeof LayoutDashboard; badge?: string; alert?: boolean }> = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/ai-assistant', label: 'AI Academic OS', icon: Bot, badge: 'Gemini' },
-    { href: '/documents', label: 'Doc Intelligence', icon: FileText },
+    { href: '/ai-assistant', label: 'AI assistant', icon: Bot },
+    { href: '/documents', label: 'Documents', icon: FileText },
     { href: '/attendance', label: 'Attendance', icon: UserCheck, alert: true },
     { href: '/timetable', label: 'Timetable', icon: Calendar },
-    { href: '/community', label: 'Community Doubts', icon: MessageSquare },
-    { href: '/collaboration', label: 'AI Team Matcher', icon: Users, badge: 'AI' },
-    { href: '/projects', label: 'Project Workspace', icon: FolderGit2 }
+    { href: '/community', label: 'Community', icon: MessageSquare },
+    { href: '/collaboration', label: 'Find collaborators', icon: Users },
+    { href: '/projects', label: 'Projects', icon: FolderGit2 }
   ];
 
-  const teacherLinks = [
+  const teacherLinks: Array<{ href: string; label: string; icon: typeof LayoutDashboard; badge?: string; alert?: boolean }> = [
     { href: '/teacher', label: 'Overview', icon: LayoutDashboard },
     { href: '/teacher/attendance', label: 'Mark Attendance', icon: ClipboardList, badge: 'Active' },
     { href: '/teacher/courses', label: 'Course Rosters', icon: GraduationCap }
@@ -47,11 +45,13 @@ export const Sidebar: React.FC = () => {
   const links = isTeacher ? teacherLinks : studentLinks;
 
   return (
-    <aside className="w-64 shrink-0 glass-panel border-r border-border/40 flex flex-col justify-between py-6 px-4 hidden md:flex min-h-[calc(100vh-61px)]">
-      <div className="space-y-6">
-        <div className="px-2">
-          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-            {isTeacher ? 'Faculty Portal' : 'Student Operating System'}
+    <aside
+      className="sticky top-[64px] flex h-[calc(100vh-64px)] w-[224px] shrink-0 flex-col justify-between border-r border-[#dfe4df] bg-[#f8faf7] px-3 py-4 max-md:hidden"
+    >
+      <div>
+        <div className="mb-3 px-2">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#989d95]">
+            {isTeacher ? 'Faculty workspace' : 'My workspace'}
           </p>
         </div>
 
@@ -64,14 +64,14 @@ export const Sidebar: React.FC = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
+                className={`edu-nav-link relative flex items-center justify-between rounded-[7px] px-3 py-2.5 text-[13px] font-medium ${
                   isActive
-                    ? 'bg-primary text-white shadow-glow-primary'
-                    : 'text-slate-300 hover:text-white hover:bg-surface-elevated/70'
+                    ? 'edu-nav-active bg-[#edf3ee] text-[#1d5a43]'
+                    : 'text-[#686d66] hover:bg-[#f2f4f0] hover:text-[#171918]'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-primary' : 'text-slate-400'}`} />
                   <span>{link.label}</span>
                 </div>
                 {link.badge && (
@@ -86,17 +86,15 @@ export const Sidebar: React.FC = () => {
           })}
         </nav>
       </div>
-
-      {/* Persistent Academic OS Footer Card */}
-      <div className="glass-card rounded-2xl p-3.5 border border-border/40">
+      <div className="mb-1 rounded-[9px] border border-[#e4e7e1] bg-white p-3.5">
         <div className="flex items-center gap-2 mb-1.5">
           <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-          <span className="text-[11px] font-semibold text-white">Continuous State</span>
+          <span className="text-[11px] font-semibold text-slate-800">Workspace status</span>
         </div>
         <p className="text-[11px] text-slate-400 leading-relaxed">
           {isTeacher
-            ? 'Real-time attendance syncing directly into student academic profiles.'
-            : 'Gemini reasoning grounded in your persistent database state.'}
+            ? 'Attendance is synced to student academic profiles.'
+            : 'Academic insights grounded in your current records.'}
         </p>
       </div>
     </aside>

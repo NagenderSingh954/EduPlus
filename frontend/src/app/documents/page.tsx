@@ -14,13 +14,13 @@ const statusColors: Record<string, string> = {
 };
 
 const categoryIcons: Record<string, string> = {
-  EXAM_RESULT: '📊',
-  TIMETABLE: '📅',
-  ASSIGNMENT: '📝',
-  SYLLABUS: '📚',
-  ANNOUNCEMENT: '📢',
-  NOTES: '📋',
-  OTHER: '📄',
+  EXAM_RESULT: 'Results',
+  TIMETABLE: 'Schedule',
+  ASSIGNMENT: 'Assignment',
+  SYLLABUS: 'Syllabus',
+  ANNOUNCEMENT: 'Notice',
+  NOTES: 'Notes',
+  OTHER: 'Document',
 };
 
 export default function DocumentsPage() {
@@ -89,9 +89,10 @@ export default function DocumentsPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div>
-        <h1 className="text-xl font-bold text-white">Document Intelligence</h1>
-        <p className="text-xs text-slate-400 mt-1">Upload academic documents · Gemini analyzes and updates your academic memory</p>
+      <div className="border-b border-[#e4e7e1] pb-5">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#1d5a43]">Academic files</p>
+        <h1 className="mt-1 text-[26px] font-semibold tracking-[-0.035em] text-[#171918]">Documents</h1>
+        <p className="mt-1 text-[12px] text-[#858b82]">Upload and organize your academic material</p>
       </div>
 
       {/* Upload Zone */}
@@ -208,7 +209,7 @@ export default function DocumentsPage() {
               >
                 <div>
                   <div className="flex items-start gap-3">
-                    <div className="text-2xl shrink-0">{categoryIcons[doc.documentCategory] || '📄'}</div>
+                    <div className="shrink-0 rounded-md border border-border bg-surface-elevated px-2 py-1 text-[9px] font-semibold uppercase tracking-wide text-slate-500">{categoryIcons[doc.documentCategory] || 'Document'}</div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-semibold text-white truncate">{doc.title}</p>
