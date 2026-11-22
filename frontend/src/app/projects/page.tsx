@@ -221,20 +221,16 @@ export default function ProjectsPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#e4e7e1] pb-5">
         <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <FolderGit2 className="w-5 h-5 text-primary-glow" />
-            Project Collaboration Workspace
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            AI-driven milestone architecture, real-time Kanban board, and project intelligence
-          </p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#1d5a43]">Project workspace</p>
+          <h1 className="mt-1 text-[26px] font-semibold tracking-[-0.035em] text-[#171918]">Projects</h1>
+          <p className="mt-1 text-[12px] text-[#858b82]">Milestones, tasks and team progress</p>
         </div>
 
         <button
           onClick={() => setShowAiModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-95 text-white text-xs font-bold transition-all shadow-glow-primary"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-[8px] bg-[#171817] hover:bg-[#30312f] text-white text-xs font-semibold transition-all"
         >
           <Sparkles className="w-4 h-4 animate-pulse-subtle" />
           Create Project with AI
@@ -392,13 +388,13 @@ export default function ProjectsPage() {
                   onClick={() => handleAskProjectAi('What should I work on next?')}
                   className="text-[10px] px-2.5 py-1 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary-glow border border-primary/30 transition-all"
                 >
-                  ⚡ Next Task?
+                  Next task
                 </button>
                 <button
                   onClick={() => handleAskProjectAi('What is blocking our project?')}
                   className="text-[10px] px-2.5 py-1 rounded-lg bg-warning/20 hover:bg-warning/30 text-warning border border-warning/30 transition-all"
                 >
-                  ⚠️ Bottlenecks?
+                  Bottlenecks
                 </button>
               </div>
             </div>
@@ -406,7 +402,7 @@ export default function ProjectsPage() {
             {/* AI Output Bubble */}
             {aiAnswer && (
               <div className="p-3 rounded-xl bg-surface-elevated border border-border/40 text-xs text-slate-200 leading-relaxed animate-fade-in-up">
-                <p className="font-semibold text-primary-glow mb-1">🤖 Gemini Project Assistant:</p>
+                <p className="font-semibold text-primary-glow mb-1">Project assistant</p>
                 <div dangerouslySetInnerHTML={{ __html: aiAnswer.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
               </div>
             )}
@@ -627,7 +623,7 @@ export default function ProjectsPage() {
                 <button
                   type="submit"
                   disabled={generating || !aiTitle || !aiDescription}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-accent text-white text-xs font-bold transition-all shadow-glow-primary flex items-center gap-2 disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-[8px] bg-[#171817] text-white text-xs font-semibold transition-all flex items-center gap-2 disabled:opacity-50"
                 >
                   <Sparkles className="w-4 h-4 animate-pulse-subtle" />
                   {generating ? 'Gemini is Architecting...' : 'Generate Project & Tasks'}

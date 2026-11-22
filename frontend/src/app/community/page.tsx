@@ -126,14 +126,15 @@ export default function CommunityPage() {
   return (
     <div className="space-y-6 pb-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between border-b border-[#e4e7e1] pb-5">
         <div>
-          <h1 className="text-xl font-bold text-white">Community Doubts</h1>
-          <p className="text-xs text-slate-400 mt-1">Student-powered Q&A · Ask doubts · Help others</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#1d5a43]">Campus network</p>
+          <h1 className="mt-1 text-[26px] font-semibold tracking-[-0.035em] text-[#171918]">Community</h1>
+          <p className="mt-1 text-[12px] text-[#858b82]">Questions, discussion and peer support</p>
         </div>
         <button
           onClick={() => setShowCreate(!showCreate)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-sm font-semibold transition-all shadow-glow-primary"
+          className="flex h-10 items-center gap-2 rounded-[8px] bg-[#1d5a43] px-4 text-[12px] font-semibold text-white transition hover:bg-[#174936]"
         >
           <Plus className="w-4 h-4" /> Ask Question
         </button>

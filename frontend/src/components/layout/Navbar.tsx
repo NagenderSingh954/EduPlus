@@ -2,14 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { useTheme } from '@/lib/theme-context';
-import { Bell, Sparkles, CheckCircle2, AlertCircle, LogOut, Sun, Moon } from 'lucide-react';
+import { Bell, CheckCircle2, AlertCircle, LogOut } from 'lucide-react';
 import { fetchApi } from '@/lib/api';
 import { usePathname } from 'next/navigation';
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -31,7 +29,7 @@ export const Navbar: React.FC = () => {
   }, [user]);
 
   // Hide navbar on login page — MUST be after all hooks
-  if (pathname === '/login') return null;
+  if (pathname === '/login' || pathname === '/') return null;
 
   const markAllAsRead = async () => {
     try {
@@ -42,22 +40,19 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full glass-panel border-b border-border/50 px-6 py-3 flex items-center justify-between">
+    <header className="sticky top-0 z-40 flex h-[64px] w-full items-center justify-between border-b border-[#e4e7e1] bg-white px-4 md:px-8">
       {/* Brand */}
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-glow-primary">
-          <Sparkles className="w-5 h-5 text-white animate-pulse-subtle" />
+        <div className="grid h-8 w-8 place-items-center rounded-[7px] bg-[#1d5a43] text-[11px] font-bold text-white">
+          EP
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <span className="font-bold text-lg tracking-tight text-white">
-              Edu<span className="text-primary-glow">Plus</span>
-            </span>
-            <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/20 text-primary-glow border border-primary/30">
+            <span className="text-[16px] font-bold tracking-[-0.02em] text-[#171918]">
               EduPlus
             </span>
           </div>
-          <p className="text-xs text-slate-400 hidden sm:block">AI-Powered Academic Intelligence &amp; Collaboration</p>
+          <p className="hidden text-[11px] text-[#858a82] sm:block">Academic workspace</p>
         </div>
       </div>
 
@@ -65,27 +60,10 @@ export const Navbar: React.FC = () => {
       <div className="flex items-center gap-3">
         {/* Role badge */}
         {user && (
-          <span className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border ${user.role === 'TEACHER'
-              ? 'bg-emerald-600/15 border-emerald-500/30 text-emerald-400'
-              : 'bg-primary/15 border-primary/30 text-primary-glow'
-            }`}>
-            {user.role === 'TEACHER' ? '👨‍🏫' : '🧑‍🎓'} {user.role}
+          <span className="hidden sm:flex px-2.5 py-1.5 rounded-md text-[11px] font-semibold border border-[#dfe3dc] bg-[#f5f6f3] text-[#343631]">
+            {user.role === 'TEACHER' ? 'Teacher' : 'Student'}
           </span>
         )}
-
-        {/* Theme Toggle Button (Light / Dark Mode) */}
-        <button
-          onClick={toggleTheme}
-          className="relative p-2 rounded-xl bg-surface-elevated/60 border border-border/50 text-slate-300 hover:text-white hover:border-primary/40 transition-all flex items-center justify-center group shadow-sm"
-          title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-        >
-          {theme === 'dark' ? (
-            <Sun className="w-4 h-4 text-amber-400 group-hover:rotate-45 transition-transform duration-300" />
-          ) : (
-            <Moon className="w-4 h-4 text-indigo-500 group-hover:-rotate-12 transition-transform duration-300" />
-          )}
-        </button>
 
         {/* Notifications */}
         <div className="relative">

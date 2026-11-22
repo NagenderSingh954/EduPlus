@@ -58,7 +58,7 @@ export default function TeacherDashboardPage() {
   return (
     <div className="space-y-6 pb-8">
       {/* Header Banner */}
-      <div className="glass-card rounded-2xl p-6 border border-emerald-500/20 bg-gradient-to-r from-emerald-500/10 via-transparent to-primary/10 animate-fade-in-up">
+      <div className="rounded-[10px] p-6 border border-[#dbe5dd] bg-white animate-fade-in-up">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
@@ -67,7 +67,7 @@ export default function TeacherDashboardPage() {
               </span>
               <span className="text-xs text-slate-400">ID: {teacher.employeeId}</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mt-1.5">Welcome back, {teacher.name} 👋</h1>
+            <h1 className="text-2xl font-bold text-slate-950 mt-1.5">Welcome back, {teacher.name}</h1>
             <p className="text-xs text-slate-400 mt-1">
               {teacher.designation} · {teacher.department}
             </p>

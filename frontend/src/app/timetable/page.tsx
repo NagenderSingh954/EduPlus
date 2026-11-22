@@ -217,10 +217,11 @@ export default function TimetablePage() {
   return (
     <div className="space-y-5 pb-8">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="flex items-end justify-between flex-wrap gap-4 border-b border-[#e4e7e1] pb-5">
         <div>
-          <h1 className="text-xl font-bold text-white">Timetable & Subjects</h1>
-          <p className="text-xs text-slate-400 mt-1">Manage your weekly class schedule and enrolled subjects</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#1d5a43]">Academic plan</p>
+          <h1 className="mt-1 text-[26px] font-semibold tracking-[-0.035em] text-[#171918]">Timetable</h1>
+          <p className="mt-1 text-[12px] text-[#858b82]">Weekly classes and enrolled subjects</p>
         </div>
         <div className="flex items-center gap-2">
           {tab === 'timetable' && (
@@ -258,7 +259,7 @@ export default function TimetablePage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 glass-panel rounded-2xl p-1 border border-border/40 w-fit">
+      <div className="flex w-fit gap-1 border-b border-[#e4e7e1]">
         {[
           { key: 'timetable', label: 'Weekly Schedule', icon: <Calendar className="w-3.5 h-3.5" /> },
           { key: 'courses', label: `My Subjects (${enrolledCount})`, icon: <BookOpen className="w-3.5 h-3.5" /> },
@@ -268,8 +269,8 @@ export default function TimetablePage() {
             onClick={() => setTab(t.key as Tab)}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
               tab === t.key
-                ? 'bg-primary text-white shadow-glow-primary'
-                : 'text-slate-400 hover:text-white'
+                ? 'border-b-2 border-[#1d5a43] text-[#1d5a43]'
+                : 'border-b-2 border-transparent text-[#858b82] hover:text-[#171918]'
             }`}
           >
             {t.icon} {t.label}
@@ -307,7 +308,7 @@ export default function TimetablePage() {
 
               {data.todayLectures?.length === 0 && (
                 <div className="glass-card rounded-2xl p-4 border border-border/30 text-center">
-                  <p className="text-xs text-slate-400">No classes today ({data.currentDay}). Click "+ Add Class Slot" to customize your schedule! 🎉</p>
+                  <p className="text-xs text-slate-500">No classes today ({data.currentDay}). Add a class slot to build your schedule.</p>
                 </div>
               )}
 

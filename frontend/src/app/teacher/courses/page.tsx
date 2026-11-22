@@ -329,7 +329,7 @@ export default function TeacherCoursesPage() {
                     <option value="LOW">Low</option>
                     <option value="MEDIUM">Medium</option>
                     <option value="HIGH">High</option>
-                    <option value="URGENT">Urgent ⚠️</option>
+                    <option value="URGENT">Urgent</option>
                   </select>
                 </div>
               </div>
